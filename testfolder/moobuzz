@@ -1,0 +1,14 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n; cin >> n;
+    int cycles = n / 8;
+    int mod = n % 8;
+    int num = 15 * cycles;
+    while (mod > 0) {
+        num++;
+        if (num % 3 != 0 && num % 5 != 0) mod--;
+    }
+    cout << num << endl;
+}
