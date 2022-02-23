@@ -1,0 +1,48 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define pb push_back
+
+const int mn = 1e5 + 10;
+vector<int> adj[mn];
+bool visited[mn];
+vector<int> ccs;
+vector<int> xs;
+vector<int> ys;
+
+void dfs(int node) {
+    if (visited[node]) return;
+    visited[node] = true;
+    ccs.pb(node);
+    for (int x : adj[node]) {
+        dfs(x);
+    }
+}
+
+int main() {
+    int n, m; cin >> n >> m;
+    for (int i = 0; i < n; i++) {
+        int x, y; cin >> x >> y;
+        xs.pb(x); ys.pb(y);
+    }
+    for (int i = 0; i < m; i++) {
+        int a, b; cin >> a >> b;
+        adj[a].pb(b); adj[b].pb(a);
+    }
+    int minarea = 1e9;
+    for (int i = 1; i <= n; i++) {
+        if (!visited[i]) {
+            dfs(i);
+            int minx = 1e9, miny = 1e9, maxx = 0, maxy = 0;
+            for (int i = 0; i < ccs.size(); i++) {
+                minx = min(minx, xs[ccs[i] - 1]);
+                miny = min(miny, ys[ccs[i] - 1]);
+                maxx = max(maxx, xs[ccs[i] - 1]);
+                maxy = max(maxy, ys[ccs[i] - 1]);
+            }
+            int perim = (maxx - minx) * 2 + (maxy - miny) * 2;
+            minarea = min(minarea, perim);
+        }
+    }
+    cout << minarea;
+}
