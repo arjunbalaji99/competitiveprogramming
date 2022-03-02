@@ -1,0 +1,33 @@
+// Source: https://usaco.guide/general/io
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int mn = 1e6;
+int mp[mn + 1]; //stores largest prime that is a factor of each number
+
+int main() {
+	for (int i = 2; i <= mn; i++) {
+		if (mp[i] == 0) { //basically if it's prime 
+			for (int j = i; j <= mn; j += i) {
+				mp[j] = i;
+			}
+		}
+	}
+
+	int n; cin >> n;
+	for (int i = 0; i < n; i++) {
+		int x; cin >> x;
+		int ans = 1;
+		while (x != 1) {
+			int hp = mp[x];
+			int count = 0;
+			while (x % hp == 0) {
+				count++;
+				x /= hp;
+			}
+			ans *= count + 1;
+		}
+		cout << ans << "\n";
+	}
+}
