@@ -1,0 +1,90 @@
+// Source: https://usaco.guide/general/io
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int mn = 101;
+int n, k, counter = 0;
+char b[mn][10];
+int dx[] = {1, 0, -1, 0}, dy[] = {0, 1, 0, -1};
+bool visited[mn][10], chain[mn][10];
+
+void floodfill(int x, int y, int num) {
+	if (visited[x][y] || b[x][y] != num || x < 0 || x >= 10 || y < 0 || y >= n) return;
+	counter++;
+	visited[x][y] = true;
+	chain[x][y] = true;
+	for (int i = 0; i < 4; i++) {
+		floodfill(x + dx[i], y + dy[i], num);
+	}
+}
+
+int main() {
+	cin >> n >> k;
+	for (int i = 0; i < n; i++) {
+		string s; cin >> s;
+		for (int j = 0; j < 10; j++) {
+			b[i][j] = s[j];
+		}
+		cout << endl;
+	}
+	cout << endl;
+	while (true) {
+		bool change = false;
+		bool drop[n][10];
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < 10; j++) {
+				drop[i][j] = false;
+			}
+		}
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < 10; j++) {
+				if (!visited[i][j] && b[i][j] != 0) {
+					for (int i = 0; i < n; i++) {
+						for (int j = 0; j < 10; j++) {
+							chain[i][j] = false;
+						}
+					}
+					counter = 0;
+					floodfill(i, j, b[i][j]);
+				}
+				if (counter >= k) {
+					change = true;
+					for (int i = 0; i < n; i++) {
+						for (int j = 0; j < 10; j++) {
+							if (chain[i][j]) drop[i][j] = true;
+						}
+					}
+				}
+			}
+		}
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < 10; j++) {
+				cout << drop[i][j];
+			}
+			cout << endl;
+		}
+		cout << endl;
+		if (change == false) break;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < 10; j++) {
+				if (drop[i][j]) {
+					b[i][j] = 0;
+					for (int k = j; k <= 0; k--) {
+						if (b[i][j - 1] != 0) {
+							b[i][j] = b[i][j - 1];
+							b[i][j - 1] = 0;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < 10; j++) {
+			cout << b[i][j];
+		}
+		cout << "\n";
+	}
+}
